@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/latitud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="Latitud:"
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/tv_latitud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/latitud"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/latitud"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/longitud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="Longitud:"
+            android:layout_marginTop="24dp"
+            android:textSize="18sp" />
+        <TextView
+            android:id="@+id/tv_longitud"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/longitud"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/longitud"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity" />
+
+</LinearLayout>
