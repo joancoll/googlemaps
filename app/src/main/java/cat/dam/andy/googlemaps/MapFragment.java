@@ -48,8 +48,8 @@ public class MapFragment extends Fragment {
                              Bundle savedInstanceState) {
         //Inicialitza view
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        TextView tv_latitud =  this.getActivity().findViewById(R.id.tv_latitud);
-        TextView tv_longitud = this.getActivity().findViewById(R.id.tv_longitud);
+        tv_latitud =  this.getActivity().findViewById(R.id.tv_latitud);
+        tv_longitud = this.getActivity().findViewById(R.id.tv_longitud);
 
 
         //Initialitza fragment mapa
@@ -71,21 +71,26 @@ public class MapFragment extends Fragment {
                 googleMap.getUiSettings().setCompassEnabled(true); //mostrem bruixola
                 // mMap.setTrafficEnabled(true); //podriem habilitar visió trànsit
                 // Podem afegir marcadors
-                LatLng girona = new LatLng(41.9802474, 2.78356);
-                MarkerOptions markerOptionsGirona = new MarkerOptions().position(girona).title("Girona").snippet("Girona té un nucli jueu");
+                LatLng latLngGirona = new LatLng(41.9802474, 2.78356);
+                MarkerOptions markerOptionsGirona = new MarkerOptions().position(latLngGirona).title("Girona").snippet("Girona té un nucli jueu");
+                markerOptionsGirona.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
                 googleMap.addMarker(markerOptionsGirona);
-                LatLng besalu = new LatLng(42.1998706, 2.6890259);
-                MarkerOptions markerOptionsBesalu = new MarkerOptions().position(besalu).title("Besalú").snippet("Besalú té un nucli jueu");
+                LatLng latLngBesalu = new LatLng(42.1998706, 2.6890259);
+                MarkerOptions markerOptionsBesalu = new MarkerOptions().position(latLngBesalu).title("Besalú").snippet("Besalú té un nucli jueu");
+                markerOptionsBesalu.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
                 googleMap.addMarker(markerOptionsBesalu);
+                LatLng latLngBanyoles = new LatLng(42.1152668,2.7656192);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLngBanyoles)); //es situa a la posició
+                googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM)); //ampliació extra d'aproximació
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
                         //Quan es clica el mapa
                         //inicalitza el marcador d'on ha clicat
-                        MarkerOptions markerOptionsClic = new MarkerOptions(); //podem canviar la icona o el color
-                        markerOptionsClic.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                        googleMap.clear(); //esborrem tots els marcadors
-                        googleMap.addMarker(markerOptionsClic.position(latLng).title("Ha clicat aquí (LAT:" + String.format("%.4f", latLng.latitude) + " LONG:" + String.format("%.4f", latLng.longitude) + ")"));
+                        MarkerOptions markerOptions = new MarkerOptions(); //podem canviar la icona o el color
+                        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                        //googleMap.clear(); //esborrem tots els marcadors
+                        googleMap.addMarker(markerOptions.position(latLng).title("Ha clicat aquí (LAT:" + String.format("%.4f", latLng.latitude) + " LONG:" + String.format("%.4f", latLng.longitude) + ")"));
                         googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng)); //es situa a la posició
                         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM)); //ampliació extra d'aproximació
                         //
@@ -134,11 +139,11 @@ public class MapFragment extends Fragment {
                             LatLng latLng = new LatLng(location.getLatitude()
                                     , location.getLongitude());
                             //Crea el marcador
-                            MarkerOptions markerOptionsSocAqui = new MarkerOptions().position(latLng).title("Sóc aquí!");
-                            markerOptionsSocAqui.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                            MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Sóc aquí!");
+                            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
                             googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng)); //es situa a la posició
                             googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM)); //ampliació extra d'aproximació
-                            googleMap.addMarker(markerOptionsSocAqui);
+                            googleMap.addMarker(markerOptions);
                         }
                     });
                 }
