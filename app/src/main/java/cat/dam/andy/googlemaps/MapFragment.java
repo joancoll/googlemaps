@@ -118,8 +118,8 @@ public class MapFragment extends Fragment {
                         return;
                     }
                     for (Location location : locationResult.getLocations()) {
-                        // Update UI with location data
-                        // ...
+                        //actualitza posició
+                        mostrarPosicio(location);
                     }
                 }
             };
@@ -165,7 +165,7 @@ public class MapFragment extends Fragment {
             public void onSuccess(Location location) {
                 //quan trobi localitzacio
                 if (location != null) {
-                    mostrarPosicio();
+                    mostrarPosicio(location);
                 }
 
             }
@@ -179,7 +179,7 @@ public class MapFragment extends Fragment {
         });
 
     }
-    public void mostrarPosicio() {
+    public void mostrarPosicio(Location location) {
         //mostra posició
         tv_latitud.setText(String.format("%f",location.getLatitude()));
         tv_longitud.setText(String.format("%f",location.getLongitude()));
