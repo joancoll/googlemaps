@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
             android:id="@+id/latitud"
@@ -25,6 +25,7 @@
             android:layout_alignBaseline="@+id/latitud"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/latitud"
+            android:text="..."
             android:textSize="16sp" />
         <TextView
             android:id="@+id/longitud"
@@ -32,8 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:text="Longitud:"
             android:layout_marginTop="24dp"
+            android:text="Longitud:"
             android:textSize="18sp" />
         <TextView
             android:id="@+id/tv_longitud"
@@ -42,7 +43,18 @@
             android:layout_alignBaseline="@+id/longitud"
             android:layout_marginLeft="10dp"
             android:layout_toRightOf="@+id/longitud"
-            android:textSize="16sp"/>
+            android:text="..."
+            android:textSize="16sp" />
+        <Button
+            android:id="@+id/btn_localitzar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:text="Localitza'm">
+        </Button>
     </RelativeLayout>
 
     <FrameLayout
