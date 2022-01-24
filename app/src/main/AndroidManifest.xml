@@ -2,12 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="cat.dam.andy.googlemaps">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
+        android:fullBackupOnly="true"
         android:icon="@mipmap/ic_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_logo"
@@ -17,7 +19,8 @@
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDgFFHQ080KEBSb3wJyHVZ_M6CVLMEKiRE"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

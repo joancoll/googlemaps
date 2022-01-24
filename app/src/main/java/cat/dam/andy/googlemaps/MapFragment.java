@@ -2,7 +2,6 @@ package cat.dam.andy.googlemaps;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -35,15 +33,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapFragment extends Fragment {
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 77; //numero indiferent i únic
     SupportMapFragment supportMapFragment;
-    private long UPDATE_INTERVAL = 10000;  /* 10 segons */
-    private long FASTEST_INTERVAL = 5000; /* 5 segons */
-    private double DEFAULT_LAT= 42.1152668, DEFAULT_LONG=2.7656192; //Ubicació per defecte (Banyoles)
-    private int MAP_ZOOM = 10; //ampliació de zoom al marcador (més gran, més zoom)
-    private int MAP_LOCATION_ZOOM = 15; //ampliació de zoom al marcador ubicació
+    private final long UPDATE_INTERVAL = 10000;  /* 10 segons */
+    private final long FASTEST_INTERVAL = 5000; /* 5 segons */
+    private final double DEFAULT_LAT = 42.1152668, DEFAULT_LONG = 2.7656192; //Ubicació per defecte (Banyoles)
+    private final int MAP_ZOOM = 10; //ampliació de zoom al marcador (més gran, més zoom)
+    private final int MAP_LOCATION_ZOOM = 15; //ampliació de zoom al marcador ubicació
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location ubicacio;
     private Marker markerUbicacio;
-    private Boolean ubicacioTrobada=false;
+    private Boolean ubicacioTrobada = false;
     private LocationCallback locationCallback;
     private TextView tv_latitud, tv_longitud;
     private Button btn_localitzar;
@@ -53,16 +51,17 @@ public class MapFragment extends Fragment {
                              Bundle savedInstanceState) {
         //Inicialitza view
         View view = inflater.inflate(R.layout.fragment_map, container, false);
-        tv_latitud =  this.getActivity().findViewById(R.id.tv_latitud);
+        tv_latitud = this.getActivity().findViewById(R.id.tv_latitud);
         tv_longitud = this.getActivity().findViewById(R.id.tv_longitud);
+
         btn_localitzar = this.getActivity().findViewById(R.id.btn_localitzar);
         btn_localitzar.setText("Esperant ubicació...");
         btn_localitzar.setEnabled(false);
         btn_localitzar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (tePermisUbicacio() && ubicacioTrobada) {
-                    mostrarPosicio(ubicacio,true);
+                if (checkPermissions() && ubicacioTrobada) {
+                    showLocation(ubicacio,true);
                 }
             }
         });
@@ -92,7 +91,7 @@ public class MapFragment extends Fragment {
                 MarkerOptions markerOptionsBesalu = new MarkerOptions().position(latLngBesalu).title("Besalú").snippet("Besalú té un nucli jueu");
                 markerOptionsBesalu.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
                 googleMap.addMarker(markerOptionsBesalu);
-                LatLng latLngDefault = new LatLng(DEFAULT_LAT,DEFAULT_LONG);
+                LatLng latLngDefault = new LatLng(DEFAULT_LAT, DEFAULT_LONG);
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLngDefault)); //es situa a la posició per defecte
                 googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM)); //ampliació extra d'aproximació
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -111,23 +110,21 @@ public class MapFragment extends Fragment {
 
             }
         }));
-        if (tePermisUbicacio()) {
+        if (checkPermissions()) {
             //Inicialitza localització
-            obteUbicacio();
+            getLocation();
+        }
+        else {
+            askForPermissions();
         }
 
         //Retorna view
         return view;
     }
 
-    private void obteUbicacio() {
-        //Comprova permisos i inicialitza tasca d'ubicació
-        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            tePermisUbicacio();
-            return;
-        }
+    private void getLocation() {
         //Inicialitza l'objecte necessari per conèixer la ubicació
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getContext());
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.requireContext());
         //Configura l'actualització de les peticions d'ubicació'
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setInterval(UPDATE_INTERVAL);
@@ -149,17 +146,22 @@ public class MapFragment extends Fragment {
                 }
                 for (Location location : locationResult.getLocations()) {
                     if (location != null) {
-                        mostrarPosicio(location, false);
+                        showLocation(location, false);
                         fusedLocationProviderClient.removeLocationUpdates(locationCallback);
                     }
                 }
             }
         };
-        // Si volem actualitzacions periodiques
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+        // Si volem actualitzacions periodiques comprovem primer si té permisos
+            if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                //si no permisos els requerim
+                askForPermissions();
+                return;
+            }
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
 
-    public void mostrarPosicio(Location location, Boolean zoom) {
+    public void showLocation(Location location, Boolean zoom) {
         //mostra posició
         tv_latitud.setText(String.format("%f",location.getLatitude()));
         tv_longitud.setText(String.format("%f",location.getLongitude()));
@@ -191,35 +193,22 @@ public class MapFragment extends Fragment {
         });
     }
 
-
-    public boolean tePermisUbicacio() {
-        if (ContextCompat.checkSelfPermission(this.getContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(this.getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-            } else {
-                ActivityCompat.requestPermissions(this.getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-            return false;
-        } else {
-            return true;
-        }
+    private boolean checkPermissions() {
+        return (ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        );
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode==MY_PERMISSIONS_REQUEST_LOCATION) {
-            if (grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED) {
-                //Quan tingui permisos crida al mètode
-                obteUbicacio();
-            }
-        }
 
+    private void askForPermissions() {
+        ActivityCompat.requestPermissions(this.getActivity(), new String[]
+                {
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                }, 3);
+        if (checkPermissions()) {
+            //Inicialitza localització
+            getLocation();
+        }
     }
 }
