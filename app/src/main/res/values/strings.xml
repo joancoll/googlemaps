@@ -1,5 +1,12 @@
 <resources>
     <string name="app_name">GoogleMaps</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="latitude">Latitude:</string>
+    <string name="longitude">Longitude:</string>
+    <string name="not_available">…</string>
+    <string name="get_location">Find me</string>
+    <string name="waitingLocation">Waiting location…</string>
+    <string name="jewishGirona">Girona has a jewish quarter</string>
+    <string name="jewishBesalu">Besalú has a jewish quarter</string>
+    <string name="clickedHere">You clicked here</string>
+    <string name="currentLocation">You are here</string>
 </resources>

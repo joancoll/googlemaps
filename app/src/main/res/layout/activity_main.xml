@@ -10,54 +10,55 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/latitud"
+            android:id="@+id/latitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:text="Latitud:"
+            android:text="@string/latitude"
             android:textSize="18sp" />
         <TextView
-            android:id="@+id/tv_latitud"
+            android:id="@+id/tv_latitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/latitud"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/latitud"
-            android:text="..."
+            android:layout_alignBaseline="@+id/latitude"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/latitude"
+            android:text="@string/not_available"
             android:textSize="16sp" />
         <TextView
-            android:id="@+id/longitud"
+            android:id="@+id/longitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="24dp"
-            android:text="Longitud:"
+            android:text="@string/longitude"
             android:textSize="18sp" />
         <TextView
-            android:id="@+id/tv_longitud"
+            android:id="@+id/tv_longitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/longitud"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/longitud"
-            android:text="..."
+            android:layout_alignBaseline="@+id/longitude"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/longitude"
+            android:text="@string/not_available"
             android:textSize="16sp" />
 
         <Button
-            android:id="@+id/btn_localitzar"
+            android:id="@+id/btn_find_me"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
-            android:text="Localitza'm"
-            android:textSize="10sp" />
+            android:layout_marginEnd="20dp"
+            android:text="@string/get_location"
+            android:textSize="11sp"
+            tools:ignore="RelativeOverlap" />
     </RelativeLayout>
 
     <FrameLayout
-        android:id="@+id/frame_mapa"
+        android:id="@+id/map_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity" />

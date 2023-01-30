@@ -5,8 +5,8 @@
     android:layout_height="match_parent"
     tools:context=".MapFragment">
 
-    <fragment
-        android:id="@+id/fragment_mapa"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map_fragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

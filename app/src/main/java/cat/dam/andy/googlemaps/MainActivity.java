@@ -12,14 +12,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Inicialitza fragment
-        Fragment fragment = new MapFragment();
-        //Obre fragment
+        Fragment mapFragment = new MapFragment();
+        //Obre fragment al frame del layout
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_mapa, fragment)
+                .replace(R.id.map_frame, mapFragment)
                 .commit();
-
-        ;
     }
 
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="cat.dam.andy.googlemaps">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -17,7 +16,7 @@
         android:theme="@style/Theme.GoogleMaps">
 
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="La teva clau API aqui"/>
+            android:value="AIzaSyCDwwHa0Gnm1wPwcGntEoAWeF6CsAo19Ac"/>
 
         <activity android:name=".MainActivity"
             android:exported="true">

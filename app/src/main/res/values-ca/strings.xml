@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GoogleMaps</string>
+    <string name="latitude">Latitud:</string>
+    <string name="longitude">Longitud:</string>
+    <string name="not_available">…</string>
+    <string name="get_location">Localitza\'m</string>
+    <string name="waitingLocation">Esperant ubicació…</string>
+    <string name="jewishGirona">Girona té un nucli jueu</string>
+    <string name="jewishBesalu">Besalú té un nucli jueu</string>
+    <string name="clickedHere">Ha clicat aquí</string>
+    <string name="currentLocation">Sou aquí!</string>
+</resources>
