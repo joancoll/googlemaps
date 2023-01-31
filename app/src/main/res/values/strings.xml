@@ -9,4 +9,7 @@
     <string name="jewishBesalu">Besalú has a jewish quarter</string>
     <string name="clickedHere">You clicked here</string>
     <string name="currentLocation">You are here</string>
+    <string name="locationPermissionNeeded">We need access to your location to know where you are</string>
+    <string name="locationPermissionThanks">You gave access to your location. Thanks!</string>
+    <string name="locationPermissionSettings">You permanently denied access to your location, please enable this permission in your settings to enjoy this app.</string>
 </resources>

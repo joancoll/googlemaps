@@ -10,4 +10,7 @@
     <string name="jewishBesalu">Besalú té un nucli jueu</string>
     <string name="clickedHere">Ha clicat aquí</string>
     <string name="currentLocation">Sou aquí!</string>
+    <string name="locationPermissionNeeded">Per poder situar la seva posició necessitem accés a la seva ubicació</string>
+    <string name="locationPermissionThanks">Ha donat permís per accedir a la seva ubicació. Gràcies!</string>
+    <string name="locationPermissionSettings">S\'ha denegat permanentment el permís d\'ubicació, si us plau habiliti aquest permís a la configuració per poder utilitzar correctament l\'aplicació.</string>
 </resources>

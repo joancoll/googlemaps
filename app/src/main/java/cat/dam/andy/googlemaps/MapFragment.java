@@ -1,25 +1,18 @@
 package cat.dam.andy.googlemaps;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
-import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -41,13 +34,13 @@ import java.util.Locale;
 
 public class MapFragment extends Fragment {
     //Members
-    SupportMapFragment supportMapFragment;
+    private final String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
     private final long UPDATE_INTERVAL = 10000;  /* 10 segons */
     private final long FASTEST_INTERVAL = 5000; /* 5 segons */
     private final double DEFAULT_LAT = 42.1152668, DEFAULT_LONG = 2.7656192; //Ubicació per defecte (Banyoles)
     private final int MAP_ZOOM = 10; //ampliació de zoom al marcador (més gran, més zoom)
     private final int MAP_LOCATION_ZOOM = 15; //ampliació de zoom al marcador ubicació
-    final int PERMISSION_GRANTED = PackageManager.PERMISSION_GRANTED;
+    private SupportMapFragment supportMapFragment;
     private Location myLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Marker locationMarker;
@@ -55,7 +48,8 @@ public class MapFragment extends Fragment {
     private LocationCallback locationCallback;
     private TextView tv_latitude, tv_longitude;
     private Button btn_find_me;
-    private ActivityResultLauncher<String[]> activityResultLauncher;
+    private PermissionManager permissionManager;
+    private PermissionRequired permissionRequired;
 
 
     @Override
@@ -67,13 +61,13 @@ public class MapFragment extends Fragment {
         initPermissions();
         initListeners();
         initMap();
-        //showLocation(location,true);
-        if (checkPermissions()) {
+
+        if (permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS)) {
             //Inicialitza localització
             getLocation();
         }
         else {
-            askForPermissions();
+            permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS);
         }
         //Retorna view del fragment
         return view;
@@ -87,42 +81,31 @@ public class MapFragment extends Fragment {
     }
 
     private void initPermissions() {
-        activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestMultiplePermissions(),
-                result -> {
-                    for (String permission : result.keySet()) {
-                        if (Boolean.TRUE.equals(result.get(permission))) {
-                            Toast.makeText(requireActivity(), permission + " Permission granted", Toast.LENGTH_SHORT).show();
-                        } else {
-                            if (shouldShowRequestPermissionRationale(permission)) {
-                                Toast.makeText(requireActivity(), permission + " Permission denied. This app need this permission to do the job. Thanks", Toast.LENGTH_SHORT).show();
-                            } else {
-                                new AlertDialog.Builder(requireActivity())
-                                        .setTitle("Permission denied")
-                                        .setMessage("Permission "+ permission + " was permanently denied. You need to go to Permission settings to allow it. Thanks")
-                                        .setPositiveButton("Go to settings", (dialog, which) -> {
-                                            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                                            intent.setData(Uri.parse("package:" + requireActivity().getPackageName()));
-                                            startActivity(intent);
-                                        })
-                                        .setNegativeButton("Cancel", null)
-                                        .create()
-                                        .show();
-                            }
-                        }
-                    }
-                }
-        );
+        //TO DO: add more permissionsrequires and descriptions if needed
+        permissionRequired = new PermissionRequired(PERMISSIONS[0],
+                getString(R.string.locationPermissionNeeded),
+                "",
+                getString(R.string.locationPermissionThanks),
+                getString(R.string.locationPermissionSettings));
+        //call permission manager
+        permissionManager= new PermissionManager(this.getActivity(), permissionRequired);
+
     }
 
     private void initListeners() {
         btn_find_me.setOnClickListener(v -> {
-            if (checkPermissions() && locationFound) {
-                //Inicialitza localització
-                showLocation(myLocation,true);
+            if (permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS)) {
+                if (locationFound) {
+                    //Inicialitza localització
+                    showLocation(myLocation,true);
+                }
+                else {
+                    //Obtenim localització
+                    getLocation();
+                }
             }
             else {
-                askForPermissions();
+                permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS);
             }
         });
     }
@@ -170,6 +153,7 @@ public class MapFragment extends Fragment {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void getLocation() {
         //mentre cerca la localització no es permet clicar de nou el botó
         btn_find_me.setText(R.string.waitingLocation);
@@ -202,12 +186,12 @@ public class MapFragment extends Fragment {
             }
         };
         // Si volem actualitzacions periodiques comprovem primer si té permisos
-            if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                //si no permisos els requerim
-                askForPermissions();
-                return;
-            }
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest.build(), locationCallback, Looper.getMainLooper());
+        if (!permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS)) {
+            //si no permisos els requerim
+            permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS);
+            return;
+        }
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest.build(), locationCallback, Looper.getMainLooper());
     }
 
     public void showLocation(Location location, Boolean zoom) {
@@ -239,19 +223,5 @@ public class MapFragment extends Fragment {
         });
     }
 
-    private boolean checkPermissions() {
-        //comprova que tingui tots els permisos per ubicació difusa i precisa
-        return requireActivity().checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PERMISSION_GRANTED
-                && requireActivity().checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED;
-    }
 
-
-    private void askForPermissions() {
-        //Demana si són necessaris els permisos per ubicació difusa i precisa
-        activityResultLauncher.launch(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION});
-        if (checkPermissions()) {
-            //Inicialitza localització
-            getLocation();
-        }
-    }
 }
