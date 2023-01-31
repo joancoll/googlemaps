@@ -29,10 +29,10 @@ public class PermissionManager extends AppCompatActivity {
                 new ActivityResultContracts.RequestMultiplePermissions(),
                 permissions -> {
                     // Check if all permissions are granted
-                    if (permissions.containsValue(false)) {
+                    if (permissions.values().contains(false)) {
                         // Check every permission
-                        for (String permission : permissions.keySet()){
-                            if (ActivityCompat.shouldShowRequestPermissionRationale((AppCompatActivity) context,permission)){
+                        for (String permission : permissions.keySet()) {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale((AppCompatActivity) context, permission)) {
                                 // Permission denied
                                 Toast.makeText(context, permissionRequired.getpermissionDeniedMessage(), Toast.LENGTH_LONG).show();
                             } else {
@@ -63,89 +63,15 @@ public class PermissionManager extends AppCompatActivity {
                                             intent.setData(uri);
                                             context.startActivity(intent);
                                         })
+                                        .create()
                                         .show();
                             }
                         }
-                    } else {
-                        // Permission granted
-                        Toast.makeText(context, permissionRequired.getPermissionGrantedMessage(), Toast.LENGTH_LONG).show();
                     }
-////                    if (permissions.values().contains(false)) {
-////                        // If at least one permission is denied
-////                        if (ActivityCompat.shouldShowRequestPermissionRationale((AppCompatActivity) context, Manifest.permission.ACCESS_FINE_LOCATION) ||
-////                                ActivityCompat.shouldShowRequestPermissionRationale((AppCompatActivity) context, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-////                            // Permission denied
-////                            Toast.makeText(context, permissionRequired.getpermissionDeniedMessage(), Toast.LENGTH_SHORT).show();
-////                        } else {
-////                            // Permission denied permanently
-////                            new AlertDialog.Builder(context)
-////                                    .setTitle("Permission denied")
-////                                    .setMessage(permissionRequired.getpermissionPermanentDeniedMessage())
-////                                    .setCancelable(true)
-////                                    .setPositiveButton("Ok", (dialogInterface, c) -> {
-////                                        //*************************************************
-////                                        // if user denied permanently the permissions,
-////                                        //  he should go to settings to granted the permissions
-////                                        //*************************************************
-////                                        Intent intent = new Intent();
-////                                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-////                                        Uri uri = Uri.fromParts("package", context.getPackageName(), null);
-////                                        intent.setData(uri);
-////                                        context.startActivity(intent);
-////                                    })
-////                                    .setNegativeButton("Cancel", (dialogInterface, c) -> {
-////                                        //*************************************************
-////                                        // if user denied permanently the permissions,
-////                                        //  he should go to settings to granted the permissions
-////                                        //*************************************************
-////                                        Intent intent = new Intent();
-////                                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-////                                        Uri uri = Uri.fromParts("package", context.getPackageName(), null);
-////                                        intent.setData(uri);
-////                                        context.startActivity(intent);
-////                                    })
-////                                    .create()
-////                                    .show();
-//                        }
-//                    } else {
-//                        // Permission granted
-//                        Toast.makeText(context, permissionRequired.getPermissionGrantedMessage(), Toast.LENGTH_SHORT).show();
-//                    }
                 }
         );
     }
 
-//        activityResultLauncher= registerForActivityResult(
-//                new ActivityResultContracts.RequestPermission(),
-//                isGranted -> {
-//                    if (isGranted) {
-//                        Toast.makeText(context, permissionRequired.getPermissionGrantedMessage(), Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        if (shouldShowRequestPermissionRationale(permissionRequired.getPermission())) {
-//                            Toast.makeText(context, permissionRequired.getpermissionExplanation(), Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            new AlertDialog.Builder(this)
-//                                    .setTitle("Permission denied")
-//                                    .setMessage(permissionRequired.getpermissionPermanentDeniedMessage())
-//                                    .setCancelable(true)
-//                                    .setPositiveButton("Ok", (dialogInterface, c) -> {
-//                                        //*************************************************
-//                                        // if user denied permanently the permissions,
-//                                        //  he should go to settings to granted the permissions
-//                                        //*************************************************
-//                                        Intent intent = new Intent();
-//                                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-//                                        Uri uri = Uri.fromParts("package", this.getPackageName(), null);
-//                                        intent.setData(uri);
-//                                        this.startActivity(intent);
-//                                    })
-//                                    .setNegativeButton("Cancel", null)
-//                                    .create()
-//                                    .show();
-//                        }
-//                    }
-//    });
-//    }
 
     public boolean hasAllNeededPermissions(Context context, String[] permissions) {
         //comprova que tingui els permisos necessaris

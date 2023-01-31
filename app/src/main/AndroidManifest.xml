@@ -16,7 +16,7 @@
         android:theme="@style/Theme.GoogleMaps">
 
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCDwwHa0Gnm1wPwcGntEoAWeF6CsAo19Ac"/>
+            android:value="==POSA LA TEVA CLAU D'API AQUI=="/>
 
         <activity android:name=".MainActivity"
             android:exported="true">
