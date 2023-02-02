@@ -162,7 +162,8 @@ public class MapFragment extends Fragment {
                 for (Location location : locationResult.getLocations()) {
                     if (location != null) {
                         showLocation(location, false);
-                        fusedLocationProviderClient.removeLocationUpdates(locationCallback);
+                        // Si volem aturar les actualitzacions, podem fer-ho amb aquesta línia
+                        // fusedLocationProviderClient.removeLocationUpdates(locationCallback);
                     }
                 }
             }
