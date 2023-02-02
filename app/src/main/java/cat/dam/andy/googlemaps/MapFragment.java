@@ -2,7 +2,6 @@ package cat.dam.andy.googlemaps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -29,17 +28,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 
 public class MapFragment extends Fragment {
     //Members
-    private final String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
     private final long UPDATE_INTERVAL = 10000;  /* 10 segons */
     private final long FASTEST_INTERVAL = 5000; /* 5 segons */
     private final double DEFAULT_LAT = 42.1152668, DEFAULT_LONG = 2.7656192; //Ubicació per defecte (Banyoles)
     private final int MAP_ZOOM = 10; //ampliació de zoom al marcador (més gran, més zoom)
     private final int MAP_LOCATION_ZOOM = 15; //ampliació de zoom al marcador ubicació
+    ArrayList<PermissionData> permissionsRequired=new ArrayList<>();
     private SupportMapFragment supportMapFragment;
     private Location myLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
@@ -49,8 +49,6 @@ public class MapFragment extends Fragment {
     private TextView tv_latitude, tv_longitude;
     private Button btn_find_me;
     private PermissionManager permissionManager;
-    private PermissionRequired permissionRequired;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,16 +57,9 @@ public class MapFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         initViews();
         initPermissions();
-        initListeners();
         initMap();
-
-        if (permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS)) {
-            //Inicialitza localització
-            getLocation();
-        }
-        else {
-            permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS);
-        }
+        initListeners();
+        showMap();
         //Retorna view del fragment
         return view;
 
@@ -81,33 +72,18 @@ public class MapFragment extends Fragment {
     }
 
     private void initPermissions() {
-        //TO DO: add more permissionsrequires and descriptions if needed
-        permissionRequired = new PermissionRequired(PERMISSIONS[0],
+        //TO DO: CONFIGURE ALL NECESSARY PERMISSIONS
+
+        //BEGIN
+        permissionsRequired.add(new PermissionData(Manifest.permission.ACCESS_FINE_LOCATION,
                 getString(R.string.locationPermissionNeeded),
                 "",
                 getString(R.string.locationPermissionThanks),
-                getString(R.string.locationPermissionSettings));
-        //call permission manager
-        permissionManager= new PermissionManager(this.getActivity(), permissionRequired);
+                getString(R.string.locationPermissionSettings)));
 
-    }
-
-    private void initListeners() {
-        btn_find_me.setOnClickListener(v -> {
-            if (permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS)) {
-                if (locationFound) {
-                    //Inicialitza localització
-                    showLocation(myLocation,true);
-                }
-                else {
-                    //Obtenim localització
-                    getLocation();
-                }
-            }
-            else {
-                permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS);
-            }
-        });
+        //END
+        //DON'T DELETE == call permission manager ==
+        permissionManager= new PermissionManager(requireActivity(), permissionsRequired);
     }
 
     private void initMap() {
@@ -117,7 +93,7 @@ public class MapFragment extends Fragment {
         //Mapa asíncron
         if (supportMapFragment != null) {
             supportMapFragment.getMapAsync((googleMap -> {
-                //Quan es carrega el mapa
+                //Paràmetres del mapa
                 googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL); //Representa un típic mapa de carretera amb noms de carrers i etiquetes
             /* MAP_TYPE_SATELLITE); //Representa una vista satèl·lit de l'àrea sense nom de carrers ni etiquetes
                MAP_TYPE_TERRAIN); //Dades topogràfiques. El mapa inclou colors, línies de nivells i etiquetes, i perspectiva ombrejada. Alguns carrers i etiquetes poden també ser visibles.
@@ -138,6 +114,7 @@ public class MapFragment extends Fragment {
                 LatLng latLngDefault = new LatLng(DEFAULT_LAT, DEFAULT_LONG);
                 googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLngDefault)); //es situa a la posició per defecte
                 googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM)); //ampliació extra d'aproximació
+                // Podem afegir listeners al mapa
                 googleMap.setOnMapClickListener(latLng -> {
                     // Quan es clica el mapa inicialitza el marcador a on ha clicat
                     MarkerOptions markerOptions = new MarkerOptions(); //podem canviar la icona o el color
@@ -148,14 +125,19 @@ public class MapFragment extends Fragment {
                     googleMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_ZOOM)); //ampliació extra d'aproximació
                     //
                 });
-
             }));
         }
     }
 
+    private void initListeners() {
+        btn_find_me.setOnClickListener(v -> showMap());
+    }
+
+
     @SuppressLint("MissingPermission")
     private void getLocation() {
-        //mentre cerca la localització no es permet clicar de nou el botó
+        // Obté la posició actual
+        // mentre cerca la localització no es permet clicar de nou el botó
         btn_find_me.setText(R.string.waitingLocation);
         btn_find_me.setEnabled(false);
         //Inicialitza l'objecte necessari per conèixer la ubicació
@@ -185,10 +167,10 @@ public class MapFragment extends Fragment {
                 }
             }
         };
-        // Si volem actualitzacions periodiques comprovem primer si té permisos
-        if (!permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS)) {
-            //si no permisos els requerim
-            permissionManager.hasAllNeededPermissions(this.getActivity(), PERMISSIONS);
+        // Farem actualitzacions periodiques sempre i quan tinguem permisos, sinó els demanem i retornem
+        if (!permissionManager.hasAllNeededPermissions(requireActivity(), permissionsRequired))
+        { //Si manquen permisos els demanem
+            permissionManager.askForPermissions(requireActivity(), permissionManager.getRejectedPermissions(requireActivity(), permissionsRequired));
             return;
         }
         fusedLocationProviderClient.requestLocationUpdates(locationRequest.build(), locationCallback, Looper.getMainLooper());
@@ -196,8 +178,8 @@ public class MapFragment extends Fragment {
 
     public void showLocation(Location location, Boolean zoom) {
         //mostra posició
-        tv_latitude.setText(String.format(Locale.getDefault(),"%f",location.getLatitude()));
-        tv_longitude.setText(String.format(Locale.getDefault(),"%f",location.getLongitude()));
+        tv_latitude.setText(String.format(Locale.getDefault(),"%.4f",location.getLatitude()));
+        tv_longitude.setText(String.format(Locale.getDefault(),"%.4f",location.getLongitude()));
         //Sincronitza mapa
         supportMapFragment.getMapAsync(googleMap -> {
             //Inicialitza Lat i Long
@@ -223,5 +205,20 @@ public class MapFragment extends Fragment {
         });
     }
 
+    private void showMap() {
+        if (!permissionManager.hasAllNeededPermissions(requireActivity(), permissionsRequired))
+        { //Si manquen permisos els demanem
+            permissionManager.askForPermissions(requireActivity(), permissionManager.getRejectedPermissions(requireActivity(), permissionsRequired));
+        } else {
+            //Si tenim permisos demanem la posició o la mostrem si ja la tenim
+            if (!locationFound) {
+                //Demanem la posició (per defecte ja es mostrarà el mapa)
+                getLocation();
+            } else {
+                //mostrem localització
+                showLocation(myLocation, true);
+            }
+        }
+    }
 
 }

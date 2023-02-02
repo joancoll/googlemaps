@@ -1,6 +1,6 @@
 package cat.dam.andy.googlemaps;
 
-public class PermissionRequired {
+public class PermissionData {
     // Members
     private String permission;
     private String permissionExplanation;
@@ -9,7 +9,7 @@ public class PermissionRequired {
     private String permissionPermanentDeniedMessage;
 
 
-    public PermissionRequired (String permission, String permissionExplanation, String permissionDeniedMessage, String permissionGrantedMessage, String permissionPermanentDeniedMessage) {
+    public PermissionData(String permission, String permissionExplanation, String permissionDeniedMessage, String permissionGrantedMessage, String permissionPermanentDeniedMessage) {
         this.permission = permission;
         this.permissionExplanation = permissionExplanation;
         this.permissionDeniedMessage = permissionDeniedMessage;

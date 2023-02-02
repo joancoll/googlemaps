@@ -10,6 +10,12 @@
     <string name="jewishBesalu">Besalú tiene un núcleo judío</string>
     <string name="clickedHere">Ha hecho click aquí</string>
     <string name="currentLocation">Se encuentra aquí!</string>
+    <string name="permissionGranted">Permiso otorgado</string>
+    <string name="permissionDenied">Permiso denegado</string>
+    <string name="permissionPermDenied">Vaya a Configuración</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancela</string>
+    <string name="locationReady">Ubicación encontrada</string>
     <string name="locationPermissionNeeded">Para poder situar su posición necesitamos acceso a su ubicación</string>
     <string name="locationPermissionThanks">Ha dado permiso para acceder a su ubicación. Gracias!</string>
     <string name="locationPermissionSettings">Se ha denegado permanentemente el permiso de ubicación, por favor, habilite este permisos en la configuración para poder utilizar correctamente la aplicación.</string>

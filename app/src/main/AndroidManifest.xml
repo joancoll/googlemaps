@@ -14,9 +14,9 @@
         android:roundIcon="@mipmap/ic_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.GoogleMaps">
-
+<!--TODO: UPDATE WITH YOUR API KEY-->
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="==POSA LA TEVA CLAU D'API AQUI=="/>
+            android:value="==YOUR API KEY=="/>
 
         <activity android:name=".MainActivity"
             android:exported="true">
