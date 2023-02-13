@@ -16,13 +16,12 @@
         android:theme="@style/Theme.GoogleMaps">
 <!--TODO: UPDATE WITH YOUR API KEY-->
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="==YOUR API KEY=="/>
+            android:value="AIzaSyABzv5ilQ0VM27cb0ZCDPEeQkbISf6hZo8"/>
 
         <activity android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

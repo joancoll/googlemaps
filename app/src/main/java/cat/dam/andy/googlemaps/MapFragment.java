@@ -118,7 +118,8 @@ public class MapFragment extends Fragment {
                 googleMap.setOnMapClickListener(latLng -> {
                     // Quan es clica el mapa inicialitza el marcador a on ha clicat
                     MarkerOptions markerOptions = new MarkerOptions(); //podem canviar la icona o el color
-                    markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                    markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.custom_marker));
                     //googleMap.clear(); //esborrem tots els marcadors
                     googleMap.addMarker(markerOptions.position(latLng).title(getString(R.string.clickedHere)+" (LAT:" + String.format(Locale.getDefault(),"%.4f", latLng.latitude) + " LONG:" + String.format(Locale.getDefault(),"%.4f", latLng.longitude) + ")"));
                     googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng)); //es situa a la posició
